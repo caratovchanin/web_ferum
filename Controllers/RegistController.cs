@@ -31,21 +31,21 @@ namespace webFerum.Controllers
 
         [HttpPost]
         [Authorize(Policy = "Admin")]
-        public async Task<IActionResult> Add([FromForm] UserModel data)
+        public async Task<IResult> Add([FromBody] UserModel data)
         {
             data.Password = Encrypt.sha256(data.Password);
             long id = await userService.AddUserAsync(data);
 
-            return RedirectToAction("AProfile", "Profile", id);
+            return Results.Json(id);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Reg([FromForm] UserModel data)
+        public async Task<IResult> Reg([FromBody] UserModel data)
         {
             data.Password = Encrypt.sha256(data.Password);
             await userService.AddUserAsync(data);
 
-            return RedirectToAction("Index", "Auth");
+            return Results.Ok();
         }
     }
 }
