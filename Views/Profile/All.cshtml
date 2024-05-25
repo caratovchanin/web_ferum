@@ -1,0 +1,33 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using webFerum.Models.AppContext;
+@using webFerum.Models;
+@using webFerum.Service;
+@using Microsoft.EntityFrameworkCore.Metadata;
+@using System.Collections;
+
+@inject IAuthorizationService AuthorizationService
+@inject UserService userService
+
+<div class="container mt-4">
+    @if (@Context.User.Identity.IsAuthenticated)
+    {
+        var res = await AuthorizationService.AuthorizeAsync(User, "Admin");
+        if (res.Succeeded)
+        {
+            <div class="mb-3 text-right">
+                <a class="btn btn-primary" href="/Regist">Добавить</a>
+            </div>
+        }
+    }
+    <div class="list-group">
+        @foreach (User user in await userService.GetEmployesAsync())
+        {
+            <a href="/Profile/AProfile/@user.Id" class="list-group-item list-group-item-action mb-3 border rounded">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">@user.Name @user.Surname @user.Lastname</h5>
+                    <small>@user.Role.Name</small>
+                </div>
+            </a>
+        }
+    </div>
+</div>

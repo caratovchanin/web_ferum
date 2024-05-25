@@ -1,0 +1,24 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using webFerum.Models.AppContext;
+@using webFerum.Models;
+@using webFerum.Service;
+@using Microsoft.EntityFrameworkCore.Metadata;
+@using System.Collections;
+
+@inject IAuthorizationService AuthorizationService
+@inject ArticleService articleService
+
+@if (@Context.User.Identity.IsAuthenticated)
+{
+    var res = await AuthorizationService.AuthorizeAsync(User, "Editor");
+    if (res.Succeeded)
+    {
+        <button class="btn btn-primary" onclick="window.location.href='/Article/Edit/@Model.Id'">Изменить</button>
+    }
+}
+<h2>
+    <markdown>@Model.Head</markdown>
+</h2>
+<markdown>
+    @Model.Text
+</markdown>

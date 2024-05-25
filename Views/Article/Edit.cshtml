@@ -1,0 +1,33 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using webFerum.Models.AppContext;
+@using webFerum.Models;
+@using webFerum.Service;
+@using Microsoft.EntityFrameworkCore.Metadata;
+@using System.Collections;
+
+@inject IAuthorizationService AuthorizationService
+@inject ArticleService articleService
+
+<form id="create-article-form" action="/Article/Update" class="needs-validation" novalidate method="post">
+    <input type="hidden" name="Id" value="@Model.Id" required>
+    <div class="mb-3">
+        <label for="Head" class="form-label">Название <span class="error">*</span></label>
+        <input type="text" class="form-control" id="Head" value="@Model.Head" name="Head" required>
+    </div>
+    <div class="mb-3">
+        <label for="Description" class="form-label">Описание <span class="error">*</span></label>
+        <textarea type="text" class="form-control" id="Description" name="Description" required>@Model.Description</textarea>
+    </div>
+    <div class="mb-3">
+        <label for="Face" class="form-label">Обложка <span class="error">*</span></label>
+        <input type="text" class="form-control" id="Face" value="@Model.Face" name="Face" required>
+    </div>
+    <div class="mb-3">
+        <label for="Text" class="form-label">Текст <span class="error">*</span></label>
+        <textarea class="form-control" id="Text" name="Text" rows="5" required>@Model.Text</textarea>
+    </div>
+    <div class="mb-3">
+        <button class="btn btn-primary" type="submit">Сохранить</button>
+    </div>
+</form>
+

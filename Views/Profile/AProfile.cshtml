@@ -1,0 +1,59 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using webFerum.Models.AppContext
+@using webFerum.Models
+@using webFerum.Service
+@using Microsoft.EntityFrameworkCore.Metadata
+@using System.Collections
+
+@inject IAuthorizationService AuthorizationService
+@inject UserService userService
+
+@{
+    var res = await AuthorizationService.AuthorizeAsync(User, "Empl");
+    var resAdmin = await AuthorizationService.AuthorizeAsync(User, "Admin");
+}
+
+@if (resAdmin.Succeeded)
+{
+    <button class="btn btn-primary" onclick="window.location.href='/Profile/Edit/@Model.Id'">Редактировать</button>
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Имя:</label>
+                        <p>@Model.Name</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Фамилия:</label>
+                        <p>@Model.Surname</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Отчество:</label>
+                        <p>@Model.Lastname</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Номер:</label>
+                        <p>@Model.Number</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Почта:</label>
+                        <p>@Model.Email</p>
+                    </div>
+                    @if (res.Succeeded)
+                    {
+                        <div class="form-group">
+                            <label>Должность:</label>
+                            <p>@Model.Role.Name</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

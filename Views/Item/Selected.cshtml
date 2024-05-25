@@ -1,0 +1,94 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using webFerum.Models.AppContext
+@using webFerum.Models
+@using webFerum.Service
+@using Microsoft.EntityFrameworkCore.Metadata
+@using System.Collections
+@using Microsoft.AspNetCore.Mvc
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Identity
+
+@inject IAuthorizationService AuthorizationService
+@inject ArticleService articleService
+
+<div class="container mt-5">
+    @if (@Context.User.Identity.IsAuthenticated)
+    {
+        var res = await AuthorizationService.AuthorizeAsync(User, "Editor");
+        if (res.Succeeded)
+        {
+            <div class="d-flex justify-content-end mb-3">
+                <button class="btn btn-primary" onclick="window.location.href='/Item/Edit/@Model.Id'">Изменить</button>
+            </div>
+        }
+    }
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="d-flex flex-wrap">
+                <div class="flex-shrink-0 mb-3 me-lg-4">
+                    <img src="@Model.Img" alt="image" class="img-fluid rounded" style="max-width: 600px; max-height: 600px;" />
+                </div>
+                <div class="flex-grow-1">
+                    <h2 class="card-title">
+                        <markdown>@Model.Name</markdown>
+                    </h2>
+                    <h4 class="text-muted mb-4">
+                        <markdown>@Model.Cost</markdown>
+                    </h4>
+                    <div class="mt-4">
+                        @if (@Context.User.Identity.IsAuthenticated)
+                        {
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#buyModalAuth">
+                                Купить
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-primary" onclick="window.location.href='/Regist'">
+                                Купить
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <p class="card-text">
+                    <markdown>@Model.Description</markdown>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (@Context.User.Identity.IsAuthenticated)
+{
+    <div class="modal fade" id="buyModalAuth" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="/Client/CreateClient" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Отправить заявку</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <input type="hidden" name="IdItem" value="@Model.Id" required>
+                        <input type="hidden" name="IdUser" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)" required>
+
+                        <div class="mb-3">
+                            <label for="Message" class="form-label">Дополнительная информация <span class="text-danger">*</span></label>
+                            <textarea class="form-control" name="Message" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Отправить заявку</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+
+

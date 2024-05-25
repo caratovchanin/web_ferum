@@ -1,0 +1,37 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using webFerum.Models.AppContext
+@using webFerum.Models
+@using webFerum.Service
+@using Microsoft.EntityFrameworkCore.Metadata
+@using System.Collections
+
+@inject IAuthorizationService AuthorizationService
+@inject ItemService itemService
+
+<div class="container mt-5">
+    @if (@Context.User.Identity.IsAuthenticated)
+    {
+        var res = await AuthorizationService.AuthorizeAsync(User, "Operator");
+        if (res.Succeeded)
+        {
+            <div class="d-flex justify-content-end mb-3">
+                <button class="btn btn-primary" onclick="window.location.href='/Item/Add'">Добавить</button>
+            </div>
+        }
+    }
+    <div class="row">
+        @foreach (Item item in await itemService.GetItemsAsync())
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="@item.Img" class="card-img-top img-fluid" alt="@item.Name">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="/Item/Selected/@item.Id" class="text-decoration-none">@item.Name</a>
+                        </h5>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

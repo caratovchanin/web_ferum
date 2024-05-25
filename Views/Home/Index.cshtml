@@ -1,0 +1,63 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using webFerum.Models.AppContext;
+@using webFerum.Models;
+@using webFerum.Service;
+@using Microsoft.EntityFrameworkCore.Metadata;
+@using System.Collections;
+
+@inject IAuthorizationService AuthorizationService;
+@inject ArticleService articleService;
+@inject ItemService itemSerivce;
+
+@{
+    IQueryable<Article> arts = await articleService.GetAtriclesIQueryableAsync();
+    IQueryable<Item> items = await itemSerivce.GetItemsIQueryableAsync();
+    int count = 5;
+}
+<h2>Последние статьи</h2>
+<div class="d-flex justify-content-center rgba-black-strong py-3 px-4 rounded">
+    @foreach (Article art in arts.Reverse())
+    {
+        if (count == 0)
+            break;
+        <div class="mx-2 my-2">
+            <h2>
+                <a href="/Article/Selected/@art.Id">@art.Head</a>
+            </h2>
+            <markdown>
+                <img src="@art.Face" width="300" height="300" alt="@art.Head"/>
+            </markdown>
+            <markdown>
+                @art.Description;
+            </markdown>
+        </div>
+
+
+        count -= 1;
+    }
+</div>
+@{
+    count = 5;
+}
+<h2>Новые товары и услуги</h2>
+<div class="d-flex justify-content-center rgba-black-strong py-3 px-4 rounded">
+    @foreach (Item item in items.Reverse())
+    {
+        if (count == 0)
+            break;
+        <div class="mx-2 my-2">
+            <h2>
+                <a href="/Item/Selected/@item.Id">@item.Name</a>
+            </h2>
+            <markdown>
+                <img src="@item.Img" width="300" height="300" alt="@item.Name" />
+            </markdown>
+            <markdown>
+                @item.Cost
+            </markdown>
+        </div>
+
+
+        count -= 1;
+    }
+</div>

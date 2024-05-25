@@ -1,0 +1,90 @@
+﻿@using Microsoft.EntityFrameworkCore.Metadata;
+@using Microsoft.AspNetCore.Authorization;
+@using System.Collections;
+@using System.Security.Claims
+@using webFerum.Models.AppContext;
+@using webFerum.Service;
+
+@inject IAuthorizationService AuthorizationService
+@inject UserService userService
+@inject RoleService roleServ;
+
+@{
+    ViewData["Title"] = "Редактирование профиля";
+}
+
+<form action="/Update" method="post">
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-body">
+                <input type="hidden" name="Id" value="@Model.Id" required>
+
+                <div class="form-group row">
+                    <label for="Name" class="col-sm-3 col-form-label">Имя:</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="name" name="Name" value="@Model.Name" class="form-control mb-3" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="Surname" class="col-sm-3 col-form-label">Фамилия:</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="surname" name="Surname" value="@Model.Surname" class="form-control mb-3" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="Lastname" class="col-sm-3 col-form-label">Отчество:</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="lastname" name="Lastname" value="@Model.Lastname" class="form-control mb-3" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="Number" class="col-sm-3 col-form-label">Номер телефона:</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="number" name="Number" value="@Model.Number" class="form-control mb-3" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="Email" class="col-sm-3 col-form-label">Почта:</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="email" name="Email" value="@Model.Email" class="form-control mb-3" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="Password" class="col-sm-3 col-form-label">Пароль:</label>
+                    <div class="col-sm-9">
+                        <input type="password" id="password" name="Password" class="form-control mb-3" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="Role" class="col-sm-3 col-form-label">Должность:</label>
+                    <div class="col-sm-9">
+                        <select class="form-control mb-3" id="Role" name="Role" required>
+                            <option value="@Model.Role.Id">@Model.Role.Name</option>
+                            @foreach (Role r in await roleServ.GetRolesAsync())
+                            {
+                                if (r.Id == Model.Role.Id)
+                                    continue;
+                                <option value="@r.Id">@r.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-9 offset-sm-3">
+                        <input class="btn btn-primary" type="submit" value="Сохранить">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+
+
+
+
+
+
+                               
