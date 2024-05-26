@@ -34,9 +34,9 @@ namespace webFerum.Controllers
         public async Task<IResult> Add([FromBody] UserModel data)
         {
             data.Password = Encrypt.sha256(data.Password);
-            long id = await userService.AddUserAsync(data);
+            int id = await userService.AddUserAsync(data);
 
-            return Results.Json(id);
+            return Results.Json(new { Id = id });
         }
 
         [HttpPost]

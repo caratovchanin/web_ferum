@@ -30,9 +30,9 @@ namespace webFerum.Controllers
         }
 
         [Authorize(Policy = "Admin")]
-        public async Task<IActionResult> AProfile(int id)
+        public async Task<IActionResult> AProfile(int Id)
         {
-            User user = await userService.GetEmployeeAsync(id);
+            User user = await userService.GetEmployeeAsync(Id);
 
             return View(user);
         }

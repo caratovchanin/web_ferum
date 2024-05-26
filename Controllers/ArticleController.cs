@@ -45,11 +45,11 @@ namespace webFerum.Controllers
 
         [HttpPost]
         [Authorize(Policy = "Editor")]
-        public async Task<IActionResult> Create([FromForm]Article data)
+        public async Task<IResult> Create([FromBody]Article data)
         {
             int id = await articleService.AddArticleAsync(data);
 
-            return RedirectToAction("Selected", "Article", new { id = id });
+            return Results.Json( new { id = id });
         }
 
         [HttpPost]

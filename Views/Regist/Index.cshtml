@@ -86,7 +86,7 @@
                         <p id="ErrorNotification" class="text-danger mb-3"></p>
                     </div>
                     <div class="col-sm-9 offset-sm-3">
-                        <input id="createSubmit" class="btn btn-primary" value="Подтвердить" type="submit">
+                        <button id="createSubmit" class="btn btn-primary" type="submit">Подтвердить</button>
                     </div>
                 </div>
 
@@ -96,13 +96,27 @@
 </div>
 
 
-<script>
-    
+<script> 
     function isEmpty(input) {
         return input.trim().length === 0;
     }
+    function validateEmail(mail) 
+    {
+        return /^\w+([\.-]?\w+)*@@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)
+    }
+    function validatePhoneNumber(phoneNumber) {
+        const phoneNumberRegex = /^\+7\s?(\d{3})\s?\d{3}[\s-]?\d{2}[\s-]?\d{2}$/;
+        return phoneNumberRegex.test(phoneNumber);
+    }
+    function validatePassword(password) {
+        const minLength = 6;
+        if (password.length >= minLength) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     document.getElementById("createSubmit").addEventListener("click", async e => {
-        
         if (isEmpty(document.getElementById("name").value)) {
             document.getElementById("ErrorNotification").innerHTML = "Введите имя!";
             return;
@@ -119,23 +133,44 @@
             document.getElementById("ErrorNotification").innerHTML = "Введите номер!";
             return;
         }
-        else if (isEmpty(document.getElementById("email").value)) {
+        else if (!validatePhoneNumber(document.getElementById("number").value)) {
+            document.getElementById("ErrorNotification").innerHTML = "Введите номер телефона верно!"
+            return;
+        }
+        else if (isEmpty(document.getElementById("email").value) ) {
             document.getElementById("ErrorNotification").innerHTML = "Введите почту!";
+            return;
+        }
+        else if (!validateEmail(document.getElementById("email").value)) {
+            document.getElementById("ErrorNotification").innerHTML = "Введите почту вверно!"
             return;
         }
         else if (isEmpty(document.getElementById("password").value)) {
             document.getElementById("ErrorNotification").innerHTML = "Введите пароль!";
             return;
         }
-        else if (isEmpty(document.getElementById("role").value) && itsAdmin) { 
-            document.getElementById("ErrorNotification").innerHTML = "Выберите должность!";
+        else if (!validatePassword(document.getElementById("password").value)) {
+            document.getElementById("ErrorNotification").innerHTML = "Пароль должен быть длинее 6 символов!"
             return;
         }
+        else if(itsAdmin)
+        {
+            if (isEmpty(document.getElementById("role").value) ) { 
+                document.getElementById("ErrorNotification").innerHTML = "Выберите должность!";
+                return;
+            }
+        }
+
+        
+        
+        
 
         e.preventDefault();
 
+        let response;
+
         if (itsAdmin) {
-            let response = await fetch("@actionPath", {
+            response = await fetch("@actionPath", {
                 method: "POST",
                 headers: { "Accept": "application/json", "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -149,8 +184,8 @@
                 })
             });
         }
-        else { 
-            let response = await fetch("@actionPath", {
+        else {
+            response = await fetch("@actionPath", {
                 method: "POST",
                 headers: { "Accept": "application/json", "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -163,12 +198,16 @@
                 })
             });
         }
-
+            
         var responseCopy = response.clone();
 
-        if (isAdmin) {
+        var data = await responseCopy.json();
+
+        var href ='/Profile/AProfile/'
+
+        if (itsAdmin) {
             if (response.ok === true) {
-                document.location.href = `/Profile/AProfile/${response.json().id}`;
+                document.location.href = href;
             }
             else {
                 document.getElementById("ErrorNotification").innerHTML = "Что-то пошло не так";

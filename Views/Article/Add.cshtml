@@ -8,7 +8,7 @@
 @inject IAuthorizationService AuthorizationService
 @inject ArticleService articleService
 
-<form id="create-article-form" action="/Article/Create" method="post" class="needs-validation" novalidate>
+<div class="needs-validation" novalidate>
     <div class="mb-3">
         <label for="Head" class="form-label">Название <span class="error">*</span></label>
         <input type="text" class="form-control" id="Head" name="Head" required>
@@ -25,8 +25,64 @@
         <label for="Text" class="form-label">Текст <span class="error">*</span></label>
         <textarea class="form-control" id="Text" name="Text" rows="5" required></textarea>
     </div>
-    <div class="mb-3">
-        <button class="btn btn-primary" type="submit">Создать</button>
+    <div class="form-group row">
+        <div class="offset-sm-3">
+            <p id="ErrorNotification" class="text-danger mb-3"></p>
+        </div>
+        <div class="offset-sm-3">
+            <button id="createSubmit" class="btn btn-primary" type="submit">Создать</button>
+        </div>
     </div>
-</form>
+</div>
 
+<script>
+    function isEmpty(input) {
+        return input.trim().length === 0;
+    }
+    document.getElementById("createSubmit").addEventListener("click", async e => {
+        if (isEmpty(document.getElementById("Head").value)) {
+            document.getElementById("ErrorNotification").innerHTML = "Введите название!";
+            return;
+        }
+        else if (isEmpty(document.getElementById("Description").value)) {
+            document.getElementById("ErrorNotification").innerHTML = "Введите описание!";
+            return;
+        }
+        else if (isEmpty(document.getElementById("Text").value)) {
+            document.getElementById("ErrorNotification").innerHTML = "Введите текст статьи!";
+            return;
+        }
+
+        e.preventDefault();
+
+        let response;
+
+        response = await fetch("/Article/Create", {
+            method: "POST",
+            headers: { "Accept": "application/json", "Content-Type": "application/json" },
+            body: JSON.stringify({
+                Head: document.getElementById("Head").value,
+                Description: document.getElementById("Description").value,
+                Face: document.getElementById("Face").value,
+                Text: document.getElementById("Text").value,
+            })
+        });
+
+        var responseCopy = response.clone();
+
+        var data = await responseCopy.json();
+
+        var href = '/Article/Selected/'
+
+        href += data.id
+
+        if (response.ok === true) {
+            document.location.href = href;
+        }
+        else {
+            document.getElementById("ErrorNotification").innerHTML = "Что-то пошло не так";
+        }
+       
+
+    });
+</script>
