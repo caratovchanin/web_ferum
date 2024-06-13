@@ -15,6 +15,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using System;
 using System.Runtime.CompilerServices;
+using webFerum.Utils;
 
 namespace webFerum.Service
 {
@@ -56,8 +57,8 @@ namespace webFerum.Service
            
         }
 
-        private static Queue<(long ,webFerum.Models.AppContext.User )> emplQueue;
-        private static List<long> emplList;
+        private static Queue<(long ,webFerum.Models.AppContext.User )> emplQueue = new Queue<(long, Models.AppContext.User)>();
+        private static List<long> emplList = new List<long>();
         public Task tgBot = new Task( async () => {
 
             
@@ -97,12 +98,17 @@ namespace webFerum.Service
                             {
                                         if (update.Message.Text.Split()[0] == "/start")
                                         {
-                                            webFerum.Models.AppContext.User us = await service.uService.GetEmployeeAsync(new UserModel()
+                                            string email = update.Message.Text.Split()[1];
+                                            string pass = Utils.Encrypt.sha256(update.Message.Text.Split()[2]);
+
+                                            var userMod = new UserModel()
                                             {
-                                                Email = update.Message.Text.Split()[1],
-                                                Password = update.Message.Text.Split()[2]
-                                            });
-                                            if (us.Role.Policy == "Operator")
+                                                Email = email,
+                                                Password = pass
+                                            };
+
+                                            webFerum.Models.AppContext.User us = await service.uService.GetEmployeeAsync(userMod);
+                                            if (us.Role.Policy == "Operator" || us.Role.Policy == "Admin")
                                             {
                                                 if (emplList.Contains(update.Message.Chat.Id) == true)
                                                 {

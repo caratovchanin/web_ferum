@@ -21,6 +21,7 @@ builder.Services.AddTransient<UserService>();
 builder.Services.AddTransient<RoleService>();
 builder.Services.AddTransient<ArticleService>();
 builder.Services.AddTransient<ItemService>();
+builder.Services.AddTransient<ClientService>();
 //builder.Services.AddTransient<TgService>();
 
 string RedisEndPoint = "127.0.0.1:6379";
